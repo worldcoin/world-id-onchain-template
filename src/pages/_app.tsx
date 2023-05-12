@@ -13,10 +13,10 @@ const client = createClient(
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
-		<ConnectKitProvider>
-			<WagmiConfig client={client}>
+		<WagmiConfig client={client}>
+			<ConnectKitProvider>
 				<Component {...pageProps} />
-			</WagmiConfig>
-		</ConnectKitProvider>
+			</ConnectKitProvider>
+		</WagmiConfig>
 	)
 }
