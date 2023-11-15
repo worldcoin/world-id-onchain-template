@@ -1,1 +1,1 @@
-export const APP_NAME = "My World ID App";
+export const APP_NAME = "World Elections";
