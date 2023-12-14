@@ -1,5 +1,6 @@
-import { defaultAbiCoder as abi } from 'ethers/lib/utils'
+import { decodeAbiParameters } from 'viem'
 
-export const decode = <T>(type: string, encodedString: string): T => {
-	return abi.decode([type], encodedString)[0]
+export const decode = <T>(type: string, encodedString: `0x${string}` | undefined): T => {
+    if (!encodedString) return undefined as unknown as T
+    return decodeAbiParameters([type], encodedString)[0] as T
 }
