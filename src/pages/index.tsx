@@ -60,7 +60,7 @@ export default function Home() {
 						onSuccess={setProof}
 						handleVerify={verifyProof}
 						verification_level={VerificationLevel.Orb}
-						app_id={process.env.NEXT_PUBLIC_APP_ID!}
+						app_id={process.env.NEXT_PUBLIC_APP_ID! as `app_${string}`}
 					>
 						{({ open }: { open: any }) => <button onClick={open}>verify with world id</button>}
 					</IDKitWidget>
