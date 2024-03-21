@@ -1,62 +1,60 @@
-import { useState } from 'react'
-import { BigNumber } from 'ethers'
-import { decode } from '@/lib/wld'
-import ContractAbi from '@/abi/Contract.abi'
+import abi from '@/abi/ContractAbi.json'
 import { ConnectKitButton } from 'connectkit'
-import { IDKitWidget, ISuccessResult } from '@worldcoin/idkit'
-import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
+import { IDKitWidget, ISuccessResult, useIDKit } from '@worldcoin/idkit'
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, type BaseError } from 'wagmi'
+import { decodeAbiParameters, parseAbiParameters } from 'viem'
+import { useState } from 'react'
 
 export default function Home() {
-	const { address } = useAccount()
-	const [proof, setProof] = useState<ISuccessResult | null>(null)
+	const account = useAccount()
+	const { setOpen } = useIDKit()
+	const [done, setDone] = useState(false)
+	const { data: hash, isPending, error, writeContractAsync } = useWriteContract()
+	const { isLoading: isConfirming, isSuccess: isConfirmed } = 
+		useWaitForTransactionReceipt({
+			hash,
+		}) 
 
-	const { config } = usePrepareContractWrite({
-		address: process.env.NEXT_PUBLIC_CONTRACT_ADDR as `0x${string}`,
-		abi: ContractAbi,
-		enabled: proof != null && address != null,
-		functionName: 'verifyAndExecute',
-		args: [
-			address!,
-			proof?.merkle_root ? decode<BigNumber>('uint256', proof?.merkle_root ?? '') : BigNumber.from(0),
-			proof?.nullifier_hash ? decode<BigNumber>('uint256', proof?.nullifier_hash ?? '') : BigNumber.from(0),
-			proof?.proof
-				? decode<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>(
-						'uint256[8]',
-						proof?.proof ?? ''
-				  )
-				: [
-						BigNumber.from(0),
-						BigNumber.from(0),
-						BigNumber.from(0),
-						BigNumber.from(0),
-						BigNumber.from(0),
-						BigNumber.from(0),
-						BigNumber.from(0),
-						BigNumber.from(0),
-				  ],
-		],
-	})
-
-	const { write } = useContractWrite(config)
+	const submitTx = async (proof: ISuccessResult) => {
+		try {
+			await writeContractAsync({
+				address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+				account: account.address!,
+				abi,
+				functionName: 'verifyAndExecute',
+				args: [
+					BigInt(proof!.merkle_root),
+					BigInt(proof!.nullifier_hash),
+					account.address!,
+					decodeAbiParameters(
+						parseAbiParameters('uint256[8]'),
+						proof!.proof as `0x${string}`
+					)[0],
+				],
+			})
+			setDone(true)
+		} catch (error) {throw new Error((error as BaseError).shortMessage)}
+	}
 
 	return (
-		<main>
-			{address ? (
-				proof ? (
-					<button onClick={write}>submit tx</button>
-				) : (
-					<IDKitWidget
-						signal={address}
-						action="your-action"
-						onSuccess={setProof}
-						app_id={process.env.NEXT_PUBLIC_APP_ID!}
-					>
-						{({ open }) => <button onClick={open}>verify with world id</button>}
-					</IDKitWidget>
-				)
-			) : (
-				<ConnectKitButton />
-			)}
-		</main>
+		<div>
+			<ConnectKitButton/>
+			{account.isConnected && (<>
+				<IDKitWidget
+					app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
+					action={process.env.NEXT_PUBLIC_ACTION as string}
+					signal={account.address}
+					onSuccess={submitTx}
+					autoClose
+				/>
+
+				{!done && <button onClick={() => setOpen(true)}>{!hash && (isPending ? "Pending, please check your wallet..." : "Verify and Execute Transaction")}</button>}
+
+				{hash && <p>Transaction Hash: {hash}</p>}
+				{isConfirming && <p>Waiting for confirmation...</p>} 
+				{isConfirmed && <p>Transaction confirmed.</p>}
+				{error && <p>Error: {(error as BaseError).message}</p>}
+			</>)}
+		</div>
 	)
 }
