@@ -23,9 +23,9 @@ export default function Home() {
 				abi,
 				functionName: 'verifyAndExecute',
 				args: [
+					account.address!,
 					BigInt(proof!.merkle_root),
 					BigInt(proof!.nullifier_hash),
-					account.address!,
 					decodeAbiParameters(
 						parseAbiParameters('uint256[8]'),
 						proof!.proof as `0x${string}`

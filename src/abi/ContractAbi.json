@@ -25,6 +25,11 @@
     "name": "verifyAndExecute",
     "inputs": [
       {
+        "name": "signal",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
         "name": "root",
         "type": "uint256",
         "internalType": "uint256"
@@ -33,11 +38,6 @@
         "name": "nullifierHash",
         "type": "uint256",
         "internalType": "uint256"
-      },
-      {
-        "name": "signal",
-        "type": "address",
-        "internalType": "address"
       },
       {
         "name": "proof",
@@ -63,7 +63,7 @@
   },
   {
     "type": "error",
-    "name": "InvalidNullifier",
+    "name": "DuplicateNullifier",
     "inputs": [
       {
         "name": "nullifierHash",

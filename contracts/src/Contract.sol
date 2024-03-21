@@ -30,7 +30,7 @@ contract Contract {
 	/// @dev A placeholder event that is emitted when a user successfully verifies with World ID
 	event verified(uint256 nullifierHash);
 
-	/// @param _worldId The WorldID instance that will verify the proofs
+	/// @param _worldId The WorldID router that will verify the proofs
 	/// @param _appId The World ID app ID
 	/// @param _actionId The World ID action ID
 	constructor(IWorldID _worldId, string memory _appId, string memory _actionId) {
