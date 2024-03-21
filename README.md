@@ -15,7 +15,7 @@ Ensure you have installed [Foundry](https://book.getfoundry.sh/getting-started/i
 Start a local node forked from Optimism Sepolia, replacing `$YOUR_API_KEY` with your Alchemy API key:
 
 ```bash
-// leave this running in the background
+# leave this running in the background
 anvil -f https://opt-sepolia.g.alchemy.com/v2/$YOUR_API_KEY
 ```
 
