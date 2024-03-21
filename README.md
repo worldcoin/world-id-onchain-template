@@ -61,7 +61,8 @@ After making changes to the contract, you should:
 
 You'll need to import the private keys on the local testnet into your wallet used for local development. The default development seed phrase is `test test test test test test test test test test test junk`.
 
-> ⚠️ **Note**: This is only for local development. Do not use this seed phrase on mainnet or any public testnet.
+> [!CAUTION]
+> This is only for local development. Do not use this seed phrase on mainnet or any public testnet.
 
 When connecting your wallet to the local development environment, you will be prompted to add the network to your wallet.
 
