@@ -12,7 +12,7 @@ contract Contract {
 	//////////////////////////////////////////////////////////////////////////////
 
 	/// @notice Thrown when attempting to reuse a nullifier
-	error InvalidNullifier();
+	error DuplicateNullifier(uint256 nullifierHash);
 
 	/// @dev The World ID instance that will be used for verifying proofs
 	IWorldID internal immutable worldId;
@@ -26,7 +26,11 @@ contract Contract {
 	/// @dev Whether a nullifier hash has been used already. Used to guarantee an action is only performed once by a single person
 	mapping(uint256 => bool) internal nullifierHashes;
 
-	/// @param _worldId The WorldID instance that will verify the proofs
+	/// @param nullifierHash The nullifier hash for the verified proof
+	/// @dev A placeholder event that is emitted when a user successfully verifies with World ID
+	event Verified(uint256 nullifierHash);
+
+	/// @param _worldId The WorldID router that will verify the proofs
 	/// @param _appId The World ID app ID
 	/// @param _actionId The World ID action ID
 	constructor(IWorldID _worldId, string memory _appId, string memory _actionId) {
@@ -41,7 +45,7 @@ contract Contract {
 	/// @dev Feel free to rename this method however you want! We've used `claim`, `verify` or `execute` in the past.
 	function verifyAndExecute(address signal, uint256 root, uint256 nullifierHash, uint256[8] calldata proof) public {
 		// First, we make sure this person hasn't done this before
-		if (nullifierHashes[nullifierHash]) revert InvalidNullifier();
+		if (nullifierHashes[nullifierHash]) revert DuplicateNullifier(nullifierHash);
 
 		// We now verify the provided proof is valid and the user is verified by World ID
 		worldId.verifyProof(
@@ -58,5 +62,7 @@ contract Contract {
 
 		// Finally, execute your logic here, for example issue a token, NFT, etc...
 		// Make sure to emit some kind of event afterwards!
+
+		emit Verified(nullifierHash);
 	}
 }
