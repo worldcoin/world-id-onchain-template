@@ -28,7 +28,7 @@ contract Contract {
 
 	/// @param nullifierHash The nullifier hash for the verified proof
 	/// @dev A placeholder event that is emitted when a user successfully verifies with World ID
-	event verified(uint256 nullifierHash);
+	event Verified(uint256 nullifierHash);
 
 	/// @param _worldId The WorldID router that will verify the proofs
 	/// @param _appId The World ID app ID
@@ -63,6 +63,6 @@ contract Contract {
 		// Finally, execute your logic here, for example issue a token, NFT, etc...
 		// Make sure to emit some kind of event afterwards!
 
-		emit verified(nullifierHash);
+		emit Verified(nullifierHash);
 	}
 }
