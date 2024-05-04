@@ -19,7 +19,12 @@ Start a local node forked from Optimism Sepolia, replacing `$YOUR_API_KEY` with 
 anvil -f https://opt-sepolia.g.alchemy.com/v2/$YOUR_API_KEY
 ```
 
-In another shell, deploy the contract, replacing `$WORLD_ID_ROUTER` with the [World ID Router address](https://docs.worldcoin.org/reference/address-book) for your selected chain, `$NEXT_PUBLIC_APP_ID` with the app ID as configured in the [Worldcoin Developer Portal](https://developer.worldcoin.org), and `$NEXT_PUBLIC_ACTION` with the action ID as configured in the Worldcoin Developer Portal:
+In another shell, deploy the contract, replacing `$WORLD_ID_ROUTER` with the [World ID Router address](https://docs.worldcoin.org/reference/address-book) for your selected chain, `$NEXT_PUBLIC_APP_ID` with the app ID as configured in the [Worldcoin Developer Portal](https://developer.worldcoin.org) but (without the `app_` prefix), and `$NEXT_PUBLIC_ACTION` with the action ID as configured in the Worldcoin Developer Portal:
+
+Set the environment variables to made them available in the terminal environment.
+```
+source .env
+```
 
 ```bash
 cd contracts
